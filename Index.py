@@ -121,8 +121,7 @@ class Index:
                     self.terms[word] = {
                                         'ni' : 1, 
                                         'IDF' : 0, 
-                                        'freq' : frequencies[word], 
-                                        'weight' : 0, 
+                                        'freq' : frequencies[word],
                                         'postings' : [{'docId' : docId, 'freq' : frequencies[word], 'weight' : 0}]
                                         }
                 else:
@@ -151,9 +150,6 @@ class Index:
             ni = self.terms[word]['ni']
             log2_N_ni = math.log((totalDocs / ni), 2)
 
-            # word weight -> w_i,q 
-            self.terms[word]['weight'] = math.log((1 + self.terms[word]['freq']), 2) * log2_N_ni
-
             # postings weight -> w_i,j
             for post in self.terms[word]['postings']:
                 post['weight'] = math.log((1 + post['freq']), 2) * log2_N_ni
@@ -180,8 +176,7 @@ class Index:
             self.docsInfo[docId]['norm'] = math.sqrt(self.docsInfo[docId]['norm'])
 
 ind = Index()
-#ind.doIndexing('D:/joaqu/Documents/GitHub/RIT_TP1/xml-es', 'D:/joaqu/Documents/GitHub/RIT_TP1/stopwords.txt', 'D:/joaqu/Documents/Pruebas RIT_TP1')
-ind.loadIndex('D:/joaqu/Documents/Pruebas RIT_TP1')
+ind.doIndexing('D:/joaqu/Documents/GitHub/RIT_TP1/xml-es', 'D:/joaqu/Documents/GitHub/RIT_TP1/stopwords.txt', 'D:/joaqu/Documents/Pruebas RIT_TP1')
+#ind.loadIndex('D:/joaqu/Documents/Pruebas RIT_TP1')
 print("---")
-print(ind.generalInfo)
-print(ind.docsInfo)
+print(ind.terms)
