@@ -58,11 +58,18 @@ class Index:
         numOfFiles
         averageLength of files
     """
-    def createGeneralFile(self):
+    def __saveGeneralInfo(self, indexPath):
         pass
 
+    def __saveDocsInfo(self, indexPath):
+        pass
 
-    def generateFiles(self):
+    def __saveTerms(self, indexPath):
+        pass
+
+    def __saveIndexFiles(self, indexPath):
+        pass    
+
     def __generateFiles(self):
 
         docId = 0
@@ -137,9 +144,6 @@ class Index:
 
 ind = Index()
 ind.doIndexing(r'D:\joaqu\Documents\GitHub\RIT_TP1\xml-es',r'D:\joaqu\Documents\GitHub\RIT_TP1\stopwords.txt', "xd")
-ind.generateFiles()
-ind.calculateWeightsAndIDF()
-ind.calculateNorms()
 print("---")
 print(ind.generalInfo)
 print(ind.docsInfo)
