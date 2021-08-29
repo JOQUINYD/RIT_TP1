@@ -94,6 +94,12 @@ class Index:
         self.generalInfo['totalDocs'] = len(self.allFilesPaths)
         self.generalInfo['averageLength'] = statistics.mean(docsLength)
 
+    def calculateWeightsAndIDF(self):
+        pass
+
+    def calculateNorms(self):
+        pass
+    
 ind = Index()
 ind.setAttributes(r'D:\joaqu\Documents\GitHub\RIT_TP1\xml-es',r'D:\joaqu\Documents\GitHub\RIT_TP1\stopwords.txt')
 ind.generateFiles()
