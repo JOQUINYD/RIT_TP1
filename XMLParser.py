@@ -6,7 +6,10 @@ class XMLParser:
 
     stopwords = []
 
-    def __init__(self, stopwords):
+    def __init__(self):
+        self.stopwords = []
+
+    def setStopwords(self, stopwords):
         self.stopwords = stopwords
 
     def removeTags(self, text):
