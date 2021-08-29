@@ -1,6 +1,8 @@
 from XMLParser import XMLParser
 import os
 import statistics
+import math
+import pprint
 
 class Index:
     parser = XMLParser()
@@ -73,12 +75,12 @@ class Index:
                                         'IDF' : 0, 
                                         'freq' : frequencies[word], 
                                         'weight' : 0, 
-                                        'postings' : [{'docId' : docId, 'freq' : frequencies[word]}]
+                                        'postings' : [{'docId' : docId, 'freq' : frequencies[word], 'weight' : 0}]
                                         }
                 else:
                     self.terms[word]['ni'] += 1
                     self.terms[word]['freq'] += frequencies[word]
-                    self.terms[word]['postings'] += [{'docId' : docId, 'freq' : frequencies[word]}]
+                    self.terms[word]['postings'] += [{'docId' : docId, 'freq' : frequencies[word], 'weight' : 0}]
 
             currentDocLength = sum(frequencies.values())
 
@@ -95,13 +97,34 @@ class Index:
         self.generalInfo['averageLength'] = statistics.mean(docsLength)
 
     def calculateWeightsAndIDF(self):
+        for word in list(self.terms):
+            # log_2 (N / ni)
+            totalDocs = self.generalInfo['totalDocs'] 
+            ni = self.terms[word]['ni']
+            log2_N_ni = math.log((totalDocs / ni), 2)
+
+            # word weight -> w_i,q 
+            self.terms[word]['weight'] = math.log((1 + self.terms[word]['freq']), 2) * log2_N_ni
+
+            # postings weight -> w_i,j
+            for post in self.terms[word]['postings']:
+                post['weight'] = math.log((1 + post['freq']), 2) * log2_N_ni
+
+            # IDF
+            idf = math.log((totalDocs - ni + 0.5) / (ni + 0.5))
+            if idf >= 0:
+                self.terms['IDF'] = idf
+            else:
+                self.terms['IDF'] = 0
         pass
 
     def calculateNorms(self):
         pass
-    
+
 ind = Index()
 ind.setAttributes(r'D:\joaqu\Documents\GitHub\RIT_TP1\xml-es',r'D:\joaqu\Documents\GitHub\RIT_TP1\stopwords.txt')
 ind.generateFiles()
+ind.calculateWeightsAndIDF()
 print("---")
 print(ind.terms)
+print(ind.generalInfo)
