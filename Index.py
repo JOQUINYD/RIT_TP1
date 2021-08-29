@@ -24,7 +24,10 @@ class Index:
         self.generalInfo['directory'] = dirName
 
     def doIndexing(self, dirName, stopwordsPath, indexPath):
-        self.setAttributes(dirName, stopwordsPath)
+        self.__setAttributes(dirName, stopwordsPath)
+        self.__generateFiles()
+        self.__calculateWeightsAndIDF()
+        self.__calculateNorms()
 
     def __getStopwords(self, path):
         with open(path) as f:
