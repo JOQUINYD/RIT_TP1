@@ -26,11 +26,12 @@ class Index:
             if os.path.isdir(fullPath):
                 allFiles = allFiles + self.__getListOfFiles(fullPath)
             else:
-                allFiles.append(fullPath)
+                if(fullPath.lower().endswith('.xml')):
+                    allFiles.append(fullPath)
                     
         return allFiles
 
-ind = Index(r'D:\joaqu\Documents\GitHub\RIT_TP1\xml-es',r'D:\joaqu\Documents\GitHub\RIT_TP1\stopwords.txt')
+ind = Index(r'D:\joaqu\Documents\GitHub\RIT_TP1\xml-es',r'D:\joaqu\Documents\GitHub\RIT_TP1\stopwords.txt', 'xd')
 print(ind.allFilesPaths)
 print("---")
 print(ind.stopwords)
