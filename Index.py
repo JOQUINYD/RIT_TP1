@@ -17,7 +17,7 @@ class Index:
         self.docsInfo = {}
         self.terms = {}
 
-    def setAttributes(self, dirName, stopwordsPath):
+    def __setAttributes(self, dirName, stopwordsPath):
         self.allFilesPaths = self.__getListOfFiles(dirName)
         self.stopwords = self.__getStopwords(stopwordsPath)
         self.parser.setStopwords(self.stopwords)
@@ -60,6 +60,7 @@ class Index:
 
 
     def generateFiles(self):
+    def __generateFiles(self):
 
         docId = 0
         docsLength = []
@@ -96,7 +97,7 @@ class Index:
         self.generalInfo['totalDocs'] = len(self.allFilesPaths)
         self.generalInfo['averageLength'] = statistics.mean(docsLength)
 
-    def calculateWeightsAndIDF(self):
+    def __calculateWeightsAndIDF(self):
         for word in list(self.terms):
             # log_2 (N / ni)
             totalDocs = self.generalInfo['totalDocs'] 
@@ -118,8 +119,10 @@ class Index:
                 self.terms[word]['IDF'] = 0
         pass
 
-    def calculateNorms(self):
+    def __calculateNorms(self):
         # Sum of weights for each document
+
+        # Esto deberia ir dentro del otro calculate para no repetir iteraciones ?
         for word in list(self.terms):
             for post in self.terms[word]['postings']:
                 # w_i,j ^ 2
@@ -130,7 +133,7 @@ class Index:
             self.docsInfo[docId]['norm'] = math.sqrt(self.docsInfo[docId]['norm'])
 
 ind = Index()
-ind.setAttributes(r'D:\joaqu\Documents\GitHub\RIT_TP1\xml-es',r'D:\joaqu\Documents\GitHub\RIT_TP1\stopwords.txt')
+ind.doIndexing(r'D:\joaqu\Documents\GitHub\RIT_TP1\xml-es',r'D:\joaqu\Documents\GitHub\RIT_TP1\stopwords.txt', "xd")
 ind.generateFiles()
 ind.calculateWeightsAndIDF()
 ind.calculateNorms()
