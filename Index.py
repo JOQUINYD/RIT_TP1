@@ -13,8 +13,7 @@ class Index:
 
         self.generalInfo = {}
         self.filesInfo = {}
-        self.termsInfo = {}
-        self.postings = {}
+        self.terms = {}
 
     def setAttributes(self, dirName, stopwordsPath):
         self.allFilesPaths = self.__getListOfFiles(dirName)
@@ -66,18 +65,20 @@ class Index:
         for path in self.allFilesPaths:
             frequencies = self.parser.wordCount(path)
             for word in frequencies:
-                # postings
-                if word not in self.postings:
-                    self.postings[word] = [{'docId' : docId, 'freq' : frequencies[word]}]
-                else:
-                    self.postings[word] += [{'docId' : docId, 'freq' : frequencies[word]}]
 
-                # termsInfo
-                if word not in self.termsInfo:
-                    self.termsInfo[word] = {'ni' : 1, 'IDF' : 0, 'freq' : frequencies[word]}
+                # terms
+                if word not in self.terms:
+                    self.terms[word] = {
+                                        'ni' : 1, 
+                                        'IDF' : 0, 
+                                        'freq' : frequencies[word], 
+                                        'weight' : 0, 
+                                        'postings' : [{'docId' : docId, 'freq' : frequencies[word]}]
+                                        }
                 else:
-                    self.termsInfo[word]['ni'] += 1
-                    self.termsInfo[word]['freq'] += frequencies[word]
+                    self.terms[word]['ni'] += 1
+                    self.terms[word]['freq'] += frequencies[word]
+                    self.terms[word]['postings'] += [{'docId' : docId, 'freq' : frequencies[word]}]
 
             currentDocLength = sum(frequencies.values())
 
@@ -97,3 +98,4 @@ ind = Index()
 ind.setAttributes(r'D:\joaqu\Documents\GitHub\RIT_TP1\xml-es',r'D:\joaqu\Documents\GitHub\RIT_TP1\stopwords.txt')
 ind.generateFiles()
 print("---")
+print(ind.terms)
