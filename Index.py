@@ -119,12 +119,21 @@ class Index:
         pass
 
     def calculateNorms(self):
-        pass
+        # Sum of weights for each document
+        for word in list(self.terms):
+            for post in self.terms[word]['postings']:
+                # w_i,j ^ 2
+                self.docsInfo[post['docId']]['norm'] += post['weight'] ** 2
+
+        # sqrt for the sum of weights                
+        for docId in list(self.docsInfo):
+            self.docsInfo[docId]['norm'] = math.sqrt(self.docsInfo[docId]['norm'])
 
 ind = Index()
 ind.setAttributes(r'D:\joaqu\Documents\GitHub\RIT_TP1\xml-es',r'D:\joaqu\Documents\GitHub\RIT_TP1\stopwords.txt')
 ind.generateFiles()
 ind.calculateWeightsAndIDF()
+ind.calculateNorms()
 print("---")
-print(ind.terms)
 print(ind.generalInfo)
+print(ind.docsInfo)
