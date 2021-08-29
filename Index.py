@@ -14,7 +14,7 @@ class Index:
         self.currentFile = {}
 
         self.generalInfo = {}
-        self.filesInfo = {}
+        self.docsInfo = {}
         self.terms = {}
 
     def setAttributes(self, dirName, stopwordsPath):
@@ -87,8 +87,8 @@ class Index:
             # docsLength
             docsLength += [currentDocLength]
 
-            # filesInfo
-            self.filesInfo[docId] = {'relativePath' : path.replace(self.generalInfo['directory'],''), 'length' : currentDocLength, 'norm' : 0}
+            # docsInfo
+            self.docsInfo[docId] = {'relativePath' : path.replace(self.generalInfo['directory'],''), 'length' : currentDocLength, 'norm' : 0}
             
             docId += 1
 
