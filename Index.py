@@ -11,7 +11,6 @@ class Index:
         # stopwords is a variable inside the class
         self.allFilesPaths = [] 
         self.stopwords = []
-        self.currentFile = {}
 
         self.generalInfo = {}
         self.docsInfo = {}
@@ -88,6 +87,26 @@ class Index:
         self.__saveTerms(indexPath)
         self.__saveStopwords(indexPath)    
 
+    def __loadGeneralInfo(self, indexPath):
+        with open(indexPath + '/generalInfo.pkl', "rb") as f:
+            self.generalInfo = pickle.load(f)
+
+    def __loadDocsInfo(self, indexPath):
+        with open(indexPath + '/docsInfo.pkl', "rb") as f:
+            self.docsInfo = pickle.load(f)
+
+    def __loadTerms(self, indexPath):
+        with open(indexPath + '/terms.pkl', "rb") as f:
+            self.terms = pickle.load(f)
+
+    def loadIndex(self, path):
+        indexPath = path + '/index'
+
+        self.stopwords = self.__getStopwords(indexPath + '/stopwords.txt')
+        self.__loadGeneralInfo(indexPath)
+        self.__loadDocsInfo(indexPath)
+        self.__loadTerms(indexPath)        
+    
     def __generateFiles(self):
 
         docId = 0
@@ -161,7 +180,8 @@ class Index:
             self.docsInfo[docId]['norm'] = math.sqrt(self.docsInfo[docId]['norm'])
 
 ind = Index()
-ind.doIndexing('D:/joaqu/Documents/GitHub/RIT_TP1/xml-es', 'D:/joaqu/Documents/GitHub/RIT_TP1/stopwords.txt', 'D:/joaqu/Documents/Pruebas RIT_TP1')
+#ind.doIndexing('D:/joaqu/Documents/GitHub/RIT_TP1/xml-es', 'D:/joaqu/Documents/GitHub/RIT_TP1/stopwords.txt', 'D:/joaqu/Documents/Pruebas RIT_TP1')
+ind.loadIndex('D:/joaqu/Documents/Pruebas RIT_TP1')
 print("---")
 print(ind.generalInfo)
 print(ind.docsInfo)
