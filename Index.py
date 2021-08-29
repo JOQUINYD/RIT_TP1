@@ -2,7 +2,7 @@ from XMLParser import XMLParser
 import os
 import statistics
 import math
-import pprint
+import pickle
 
 class Index:
     parser = XMLParser()
@@ -28,6 +28,7 @@ class Index:
         self.__generateFiles()
         self.__calculateWeightsAndIDF()
         self.__calculateNorms()
+        self.__saveIndexFiles(indexPath)
 
     def __getStopwords(self, path):
         with open(path) as f:
@@ -59,16 +60,33 @@ class Index:
         averageLength of files
     """
     def __saveGeneralInfo(self, indexPath):
-        pass
+        with open(indexPath + '/generalInfo.pkl', "wb") as f:
+            pickle.dump(self.generalInfo, f)
 
     def __saveDocsInfo(self, indexPath):
-        pass
+        with open(indexPath + '/docsInfo.pkl', "wb") as f:
+            pickle.dump(self.docsInfo, f)
 
     def __saveTerms(self, indexPath):
-        pass
+        with open(indexPath + '/terms.pkl', "wb") as f:
+            pickle.dump(self.terms, f)
+
+    def __saveStopwords(self, indexPath):
+        with open(indexPath + '/stopwords.txt', "w") as f:
+            for word in self.stopwords:
+                f.write(word + "\n")
 
     def __saveIndexFiles(self, indexPath):
-        pass    
+
+        indexPath = indexPath + '/index'
+
+        if not os.path.exists(indexPath):
+            os.makedirs(indexPath)
+
+        self.__saveGeneralInfo(indexPath)
+        self.__saveDocsInfo(indexPath)
+        self.__saveTerms(indexPath)
+        self.__saveStopwords(indexPath)    
 
     def __generateFiles(self):
 
@@ -143,7 +161,7 @@ class Index:
             self.docsInfo[docId]['norm'] = math.sqrt(self.docsInfo[docId]['norm'])
 
 ind = Index()
-ind.doIndexing(r'D:\joaqu\Documents\GitHub\RIT_TP1\xml-es',r'D:\joaqu\Documents\GitHub\RIT_TP1\stopwords.txt', "xd")
+ind.doIndexing('D:/joaqu/Documents/GitHub/RIT_TP1/xml-es', 'D:/joaqu/Documents/GitHub/RIT_TP1/stopwords.txt', 'D:/joaqu/Documents/Pruebas RIT_TP1')
 print("---")
 print(ind.generalInfo)
 print(ind.docsInfo)
