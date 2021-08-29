@@ -113,9 +113,9 @@ class Index:
             # IDF
             idf = math.log((totalDocs - ni + 0.5) / (ni + 0.5))
             if idf >= 0:
-                self.terms['IDF'] = idf
+                self.terms[word]['IDF'] = idf
             else:
-                self.terms['IDF'] = 0
+                self.terms[word]['IDF'] = 0
         pass
 
     def calculateNorms(self):
