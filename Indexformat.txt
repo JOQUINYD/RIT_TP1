@@ -1,0 +1,58 @@
+generalInfo
+{
+	'directory' : 'D:/joaqu/Documents/GitHub/RIT_TP1/xml-es',
+	'totalDocs' : 78,
+	'averageLength' : 1200
+}
+
+
+docsInfo
+{
+	1 : 
+		{
+			'relativePath' : '/archivo.xml',
+			'length' : 500,
+			'norm' : 23.555
+		}
+}
+
+terms
+{
+	'palabra' :
+        {
+            'ni' : 2,
+            'IDF' : 0,
+            'freq' : 4,
+            'postings' :
+                {
+                    1 : 
+                    {
+                        'freq' : 1,
+                        'weight' : 1.25
+                    },
+                    2:
+                    {
+                        'freq' : 3,
+                        'weight' : 2.147
+                    }
+                }
+        }
+}
+
+queryInfo
+{
+    'words' :
+        {
+            'palabra' :
+                {
+                    'freq' : 2
+                    'weight' : 0.5 
+                },
+            'otra' :
+                {
+                    'freq' : 2,
+                    'weight : 1
+                }
+        },
+    'norm' : 23.32
+}
