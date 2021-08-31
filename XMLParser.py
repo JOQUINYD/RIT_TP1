@@ -40,5 +40,9 @@ class XMLParser:
                     normalizedText = self.normalize(f.read())
                     return Counter(self.splitToAcceptedWords(normalizedText))   
 
+    def wordCountText(self, text, stopwords):
+        self.stopwords = stopwords
+        normalizedText = self.normalize(text)
+        return Counter(self.splitToAcceptedWords(normalizedText))
 #parser = XMLParser(["para","mas","el","sus","al","de"])
 #print(parser.wordCount(r"D:\joaqu\Documents\GitHub\RIT_TP1\xml-es\apx-authors.xml"))
