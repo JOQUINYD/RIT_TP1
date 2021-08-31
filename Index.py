@@ -25,8 +25,7 @@ class Index:
     def doIndexing(self, dirName, stopwordsPath, indexPath):
         self.__setAttributes(dirName, stopwordsPath)
         self.__generateFiles()
-        self.__calculateWeightsAndIDF()
-        self.__calculateNorms()
+        self.__calculateRemainingData()
         self.__saveIndexFiles(indexPath)
 
     def __getStopwords(self, path):
@@ -143,16 +142,22 @@ class Index:
         self.generalInfo['totalDocs'] = len(self.allFilesPaths)
         self.generalInfo['averageLength'] = statistics.mean(docsLength)
 
-    def __calculateWeightsAndIDF(self):
+    # Calculate weights, IDF and norm
+    def __calculateRemainingData(self):
         for word in list(self.terms):
             # log_2 (N / ni)
             totalDocs = self.generalInfo['totalDocs'] 
             ni = self.terms[word]['ni']
             log2_N_ni = math.log((totalDocs / ni), 2)
 
-            # postings weight -> w_i,j
             for post in self.terms[word]['postings']:
-                post['weight'] = math.log((1 + post['freq']), 2) * log2_N_ni
+                weight = math.log((1 + post['freq']), 2) * log2_N_ni
+                
+                # postings weight -> w_i,j
+                post['weight'] = weight
+                
+                # norm sum            
+                self.docsInfo[post['docId']]['norm'] += weight ** 2
 
             # IDF
             idf = math.log((totalDocs - ni + 0.5) / (ni + 0.5))
@@ -160,23 +165,13 @@ class Index:
                 self.terms[word]['IDF'] = idf
             else:
                 self.terms[word]['IDF'] = 0
-        pass
 
-    def __calculateNorms(self):
-        # Sum of weights for each document
-
-        # Esto deberia ir dentro del otro calculate para no repetir iteraciones ?
-        for word in list(self.terms):
-            for post in self.terms[word]['postings']:
-                # w_i,j ^ 2
-                self.docsInfo[post['docId']]['norm'] += post['weight'] ** 2
-
-        # sqrt for the sum of weights                
+        # sqrt for the sum of weights -> sum                
         for docId in list(self.docsInfo):
             self.docsInfo[docId]['norm'] = math.sqrt(self.docsInfo[docId]['norm'])
 
 ind = Index()
-ind.doIndexing('D:/joaqu/Documents/GitHub/RIT_TP1/xml-es', 'D:/joaqu/Documents/GitHub/RIT_TP1/stopwords.txt', 'D:/joaqu/Documents/Pruebas RIT_TP1')
-#ind.loadIndex('D:/joaqu/Documents/Pruebas RIT_TP1')
+#ind.doIndexing('D:/joaqu/Documents/GitHub/RIT_TP1/xml-es', 'D:/joaqu/Documents/GitHub/RIT_TP1/stopwords.txt', 'D:/joaqu/Documents/Pruebas RIT_TP1')
+ind.loadIndex('D:/joaqu/Documents/Pruebas RIT_TP1')
 print("---")
-print(ind.terms)
+print(ind.docsInfo)
