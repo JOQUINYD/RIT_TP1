@@ -51,12 +51,6 @@ class Index:
                     
         return allFiles
 
-    """
-    stores:
-        dirName -> path of main directory
-        numOfFiles
-        averageLength of files
-    """
     def __saveGeneralInfo(self, indexPath):
         with open(indexPath + '/generalInfo.pkl', "wb") as f:
             pickle.dump(self.generalInfo, f)
@@ -112,21 +106,25 @@ class Index:
         docsLength = []
 
         for path in self.allFilesPaths:
-            frequencies = self.parser.wordCount(path)
-            for word in frequencies:
+            print(path)
 
+            frequencies = self.parser.wordCount(path)
+            #print(frequencies)
+            for word in frequencies.keys():
                 # terms
                 if word not in self.terms:
+                    if word == 'año':
+                        print('SOY AÑO AAAAAAAAAAAAAAAAAAAAAAAA')
                     self.terms[word] = {
                                         'ni' : 1, 
                                         'IDF' : 0, 
                                         'freq' : frequencies[word],
-                                        'postings' : [{'docId' : docId, 'freq' : frequencies[word], 'weight' : 0}]
+                                        'postings' : {docId : { 'freq' : frequencies[word], 'weight' : 0}}
                                         }
                 else:
                     self.terms[word]['ni'] += 1
                     self.terms[word]['freq'] += frequencies[word]
-                    self.terms[word]['postings'] += [{'docId' : docId, 'freq' : frequencies[word], 'weight' : 0}]
+                    self.terms[word]['postings'][docId] = {'freq' : frequencies[word], 'weight' : 0}
 
             currentDocLength = sum(frequencies.values())
 
@@ -148,30 +146,31 @@ class Index:
             # log_2 (N / ni)
             totalDocs = self.generalInfo['totalDocs'] 
             ni = self.terms[word]['ni']
-            log2_N_ni = math.log((totalDocs / ni), 2)
+            log2_N_ni = math.log2((totalDocs / ni))
 
-            for post in self.terms[word]['postings']:
-                weight = math.log((1 + post['freq']), 2) * log2_N_ni
+            for docId in list(self.terms[word]['postings']):
+                weight = math.log2((1 + self.terms[word]['postings'][docId]['freq'])) * log2_N_ni
                 
                 # postings weight -> w_i,j
-                post['weight'] = weight
+                self.terms[word]['postings'][docId]['weight'] = weight
                 
                 # norm sum            
-                self.docsInfo[post['docId']]['norm'] += weight ** 2
-
+                self.docsInfo[docId]['norm'] += weight ** 2
+            
             # IDF
             idf = math.log((totalDocs - ni + 0.5) / (ni + 0.5))
             if idf >= 0:
                 self.terms[word]['IDF'] = idf
             else:
-                self.terms[word]['IDF'] = 0
+                self.terms[word]['IDF'] = 0            
 
         # sqrt for the sum of weights -> sum                
         for docId in list(self.docsInfo):
             self.docsInfo[docId]['norm'] = math.sqrt(self.docsInfo[docId]['norm'])
 
-ind = Index()
+#ind = Index()
 #ind.doIndexing('D:/joaqu/Documents/GitHub/RIT_TP1/xml-es', 'D:/joaqu/Documents/GitHub/RIT_TP1/stopwords.txt', 'D:/joaqu/Documents/Pruebas RIT_TP1')
-ind.loadIndex('D:/joaqu/Documents/Pruebas RIT_TP1')
-print("---")
-print(ind.docsInfo)
+#ind.loadIndex('D:/joaqu/Documents/Pruebas RIT_TP1')
+#print(ind.terms['año'])
+#print("---")
+#print(ind.terms)
