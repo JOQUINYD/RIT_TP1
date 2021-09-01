@@ -1,7 +1,9 @@
 
+import re
 from typing import DefaultDict
 from Index import Index
 import math
+import bisect
 
 class Search:
     index = Index()
@@ -13,22 +15,42 @@ class Search:
     def __loadIndex(self, indexPath):
         self.index.loadIndex(indexPath)
 
-    def __searchVectorial(self, indexPath, prefix, numDocs):
-        pass
+    def __sumOfWeights(self, docId):
+        sum = 0
 
-    def __searchBM25(self):
+        for word in self.queryInfo['words'].keys():
+            if docId in self.index.terms[word]['postings'].keys():
+                sum += self.index.terms[word]['postings'][docId]['weight'] * self.queryInfo['words'][word]['weight']
+        return sum
+
+    def __simVect(self, docId):
+        return self.__sumOfWeights(docId) / (self.index.docsInfo[docId]['norm'] * self.queryInfo['norm'])
+
+    def __getScaleVect(self):
+        scale = []
+        for docId in self.index.docsInfo.keys():
+            # insert ascending order
+            bisect.insort(scale, (self.__simVect(docId), docId))
+        return scale
+
+    def __simBM25(self,docId):
         pass
 
     def search(self, indexPath, searchType, prefix, numDocs, query):
 
-        self.index.loadIndex(indexPath)
+        self.__loadIndex(indexPath)
+        self.__defineQueryInfo(query)
 
         if searchType == 'vec':
-            self.__searchVectorial()
+            print(self.index.docsInfo)
+            print('-----')
+            scale = self.__getScaleVect()
+            for doc in reversed(scale):
+                print("doc: ", doc[1], self.index.docsInfo[doc[1]]['relativePath'], ' ------- ', doc[0])
         elif searchType == 'bm25':
             self.__searchBM25()
         
-    def defineQueryInfo(self, query):
+    def __defineQueryInfo(self, query):
         
         # norm init
         self.queryInfo['norm'] = 0
@@ -54,6 +76,7 @@ class Search:
         self.queryInfo['norm'] = math.sqrt(self.queryInfo['norm'])
 
 sear = Search()
-#sear.loadIndex('D:/joaqu/Documents/Pruebas RIT_TP1')
-sear.defineQueryInfo('Hola mi nombre es por Joaquín')
+sear.search('D:/joaqu/Documents/Pruebas RIT_TP1', 'vec', 'prefijo', 20, "carga de cpu")
 print(sear.queryInfo)
+print(sear.index.terms['año'])
+#sear.loadIndex('D:/joaqu/Documents/Pruebas RIT_TP1')
