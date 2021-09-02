@@ -106,15 +106,10 @@ class Index:
         docsLength = []
 
         for path in self.allFilesPaths:
-            print(path)
-
             frequencies = self.parser.wordCount(path)
-            #print(frequencies)
             for word in frequencies.keys():
                 # terms
                 if word not in self.terms:
-                    if word == 'año':
-                        print('SOY AÑO AAAAAAAAAAAAAAAAAAAAAAAA')
                     self.terms[word] = {
                                         'ni' : 1, 
                                         'IDF' : 0, 
