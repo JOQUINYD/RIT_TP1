@@ -1,4 +1,6 @@
 
+from FileManager import FileManager
+import os
 import re
 from typing import DefaultDict
 from Index import Index
@@ -7,6 +9,7 @@ import bisect
 
 class Search:
     index = Index()
+    fileManager = FileManager()
 
     def __init__(self):
         self.searchResult = {}
@@ -31,7 +34,7 @@ class Search:
         for docId in self.index.docsInfo.keys():
             # insert ascending order
             bisect.insort(scale, (self.__simVect(docId), docId))
-        return scale
+        return reversed(scale)
 
     def __simBM25(self,docId):
         k = 1.2
@@ -53,26 +56,47 @@ class Search:
         scale = []
         for docId in self.index.docsInfo.keys():
             bisect.insort(scale, (self.__simBM25(docId), docId))
+        return reversed(scale)
+
+
+    def __getScale(self, searchType):
+        if searchType == 'vec':
+            scale = self.__getScaleVect()
+        elif searchType == 'bm25':
+            scale = self.__getScaleBM25()
+        
         return scale
 
-    def search(self, indexPath, searchType, prefix, numDocs, query):
 
+    def search(self, indexPath, searchType, prefix, numDocs, query):
         self.__loadIndex(indexPath)
         self.__defineQueryInfo(query)
 
-        if searchType == 'vec':
-            print(self.index.docsInfo)
-            print('-----')
-            scale = self.__getScaleVect()
-            for doc in reversed(scale):
-                print("doc: ", doc[1], self.index.docsInfo[doc[1]]['relativePath'], ' ------- ', doc[0])
-            return reversed(scale)
-        elif searchType == 'bm25':
-            print('-----')
-            scale = self.__getScaleBM25()
-            for doc in reversed(scale):
-                print("doc: ", doc[1], self.index.docsInfo[doc[1]]['relativePath'], ' ------- ', doc[0])
-            return reversed(scale)
+        scale = self.__getScale(searchType)
+
+        self.__saveScale(scale,prefix)
+        self.__saveHTML(scale, numDocs, query)
+
+    def __saveScale(self, scale, prefix):
+        output = ""
+        for index,doc in enumerate(scale):
+            if(doc[0] > 0):
+                if(output!=""):
+                    output+="\n"
+                output += "pos: " + str(index) + " docID: " + str(doc[1]) + " weight: " + str(doc[0])
+
+        prefix = prefix + ".sca"
+        self.fileManager.saveFile("searchResults", prefix, output)
+
+
+    def __saveHTML(self, scale, numDocs, query):
+        output = ""
+        for pos in range(numDocs):
+            if (len(scale)>=pos):
+                print()
+        
+
+
 
     def __defineQueryInfo(self, query):
         
@@ -100,10 +124,10 @@ class Search:
         self.queryInfo['norm'] = math.sqrt(self.queryInfo['norm'])
 
 sear = Search()
-sear.search('D:/joaqu/Documents/Pruebas RIT_TP1', 'bm25', 'prefijo', 20, "carga de cpu")
-print(sear.queryInfo)
+sear.search(r'D:\Documents\GitHub', 'vec', 'prefijo', 20, "carga de cpu")
+""" print(sear.queryInfo)
 print(sear.index.terms['euro'])
 print(sear.index.terms['moneda'])
 print(sear.index.docsInfo[75])
-print(sear.index.docsInfo[71])
+print(sear.index.docsInfo[71]) """
 #sear.loadIndex('D:/joaqu/Documents/Pruebas RIT_TP1')
