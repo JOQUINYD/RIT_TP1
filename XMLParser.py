@@ -40,7 +40,7 @@ class XMLParser:
         trans_tab = dict.fromkeys(map(ord, u'\u0301\u0308'), None)
         text = unicodedata.normalize('NFKC', unicodedata.normalize('NFKD', text).translate(trans_tab))
         #Find valid words
-        tokens = re.findall("[a-zA-Z0-9ñ]+",text)
+        tokens = re.findall("[a-zA-Z0-9ñ_]+",text)
         #Sort the words  
         tokens = sorted(tokens)
 
