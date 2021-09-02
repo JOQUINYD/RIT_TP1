@@ -6,6 +6,7 @@ from typing import DefaultDict
 from Index import Index
 import math
 import bisect
+import time
 
 class Search:
     index = Index()
@@ -34,7 +35,7 @@ class Search:
         for docId in self.index.docsInfo.keys():
             # insert ascending order
             bisect.insort(scale, (self.__simVect(docId), docId))
-        return reversed(scale)
+        return list(reversed(scale))
 
     def __simBM25(self,docId):
         k = 1.2
@@ -56,7 +57,7 @@ class Search:
         scale = []
         for docId in self.index.docsInfo.keys():
             bisect.insort(scale, (self.__simBM25(docId), docId))
-        return reversed(scale)
+        return list(reversed(scale))
 
 
     def __getScale(self, searchType):
@@ -75,7 +76,7 @@ class Search:
         scale = self.__getScale(searchType)
 
         self.__saveScale(scale,prefix)
-        self.__saveHTML(scale, numDocs, query)
+        self.__saveHTML(scale, prefix, numDocs, query)
 
     def __saveScale(self, scale, prefix):
         output = ""
@@ -83,19 +84,41 @@ class Search:
             if(doc[0] > 0):
                 if(output!=""):
                     output+="\n"
-                output += "pos: " + str(index) + " docID: " + str(doc[1]) + " weight: " + str(doc[0])
+                output += "pos: " + str(index) + " docID: " + str(doc[1]) + " sim: " + str(doc[0])
 
         prefix = prefix + ".sca"
         self.fileManager.saveFile("searchResults", prefix, output)
 
 
-    def __saveHTML(self, scale, numDocs, query):
+    def __saveHTML(self, scale, prefix, numDocs, query):
         output = ""
-        for pos in range(numDocs):
-            if (len(scale)>=pos):
-                print()
-        
+        output += "Query: " + query
 
+        output += "\nDate and Time: " + time.strftime("%x") + " " + time.strftime("%X")
+
+        output += "\n\nDocumentos"
+        output += "\n\n-----------------------------------------------------------"
+        
+        for pos in range(numDocs):
+            if(len(scale)>=pos):
+                doc = scale[pos]
+
+                
+                output += "\n\ndocID: " + str(doc[1])  
+                output += "\npos: " + str(pos)  
+                output += "\nsim: " + str(doc[0])  
+                output += "\npath: " + self.index.docsInfo[doc[1]]['relativePath']
+                output += "\n\nfirst 200 chraracters:"
+                output += "\nEl texto extraido"
+
+                output += "\n\n-----------------------------------------------------------"
+
+
+            else:
+                break
+
+        prefix = prefix + ".html"
+        self.fileManager.saveFile("searchResults", prefix, output)
 
 
     def __defineQueryInfo(self, query):
