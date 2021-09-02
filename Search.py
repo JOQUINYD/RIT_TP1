@@ -34,7 +34,26 @@ class Search:
         return scale
 
     def __simBM25(self,docId):
-        pass
+        k = 1.2
+        b = 0.75
+        sum = 0
+        terms = self.index.terms
+
+        for word in self.queryInfo['words'].keys():
+            if docId in self.index.terms[word]['postings'].keys():
+                freq = terms[word]['postings'][docId]['freq']
+                docLength = self.index.docsInfo[docId]['length']
+                avgdl = self.index.generalInfo['averageLength']
+
+                sum += terms[word]['IDF'] * ((freq * (k+1))/(freq + k*(1-b+b*(docLength/avgdl))))
+
+        return sum
+
+    def __getScaleBM25(self):
+        scale = []
+        for docId in self.index.docsInfo.keys():
+            bisect.insort(scale, (self.__simBM25(docId), docId))
+        return scale
 
     def search(self, indexPath, searchType, prefix, numDocs, query):
 
@@ -47,9 +66,14 @@ class Search:
             scale = self.__getScaleVect()
             for doc in reversed(scale):
                 print("doc: ", doc[1], self.index.docsInfo[doc[1]]['relativePath'], ' ------- ', doc[0])
+            return reversed(scale)
         elif searchType == 'bm25':
-            self.__searchBM25()
-        
+            print('-----')
+            scale = self.__getScaleBM25()
+            for doc in reversed(scale):
+                print("doc: ", doc[1], self.index.docsInfo[doc[1]]['relativePath'], ' ------- ', doc[0])
+            return reversed(scale)
+
     def __defineQueryInfo(self, query):
         
         # norm init
@@ -76,7 +100,10 @@ class Search:
         self.queryInfo['norm'] = math.sqrt(self.queryInfo['norm'])
 
 sear = Search()
-sear.search('D:/joaqu/Documents/Pruebas RIT_TP1', 'vec', 'prefijo', 20, "carga de cpu")
+sear.search('D:/joaqu/Documents/Pruebas RIT_TP1', 'bm25', 'prefijo', 20, "carga de cpu")
 print(sear.queryInfo)
-print(sear.index.terms['año'])
+print(sear.index.terms['euro'])
+print(sear.index.terms['moneda'])
+print(sear.index.docsInfo[75])
+print(sear.index.docsInfo[71])
 #sear.loadIndex('D:/joaqu/Documents/Pruebas RIT_TP1')
