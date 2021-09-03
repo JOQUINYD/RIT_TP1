@@ -1,3 +1,4 @@
+from FileManager import FileManager
 from XMLParser import XMLParser
 import os
 import statistics
@@ -6,6 +7,7 @@ import pickle
 
 class Index:
     parser = XMLParser()
+    fileManager = FileManager()
 
     def __init__(self):
         # stopwords is a variable inside the class
@@ -15,6 +17,7 @@ class Index:
         self.generalInfo = {}
         self.docsInfo = {}
         self.terms = {}
+        self.docsDemo = {}
 
     def __setAttributes(self, dirName, stopwordsPath):
         self.allFilesPaths = self.__getListOfFiles(dirName)
@@ -63,6 +66,10 @@ class Index:
         with open(indexPath + '/terms.pkl', "wb") as f:
             pickle.dump(self.terms, f)
 
+    def __saveDocsDemo(self, indexPath):
+        with open(indexPath + '/docsDemo.pkl', "wb") as f:
+            pickle.dump(self.docsDemo, f)
+
     def __saveStopwords(self, indexPath):
         with open(indexPath + '/stopwords.txt', "w") as f:
             for word in self.stopwords:
@@ -78,7 +85,8 @@ class Index:
         self.__saveGeneralInfo(indexPath)
         self.__saveDocsInfo(indexPath)
         self.__saveTerms(indexPath)
-        self.__saveStopwords(indexPath)    
+        self.__saveStopwords(indexPath)
+        self.__saveDocsDemo(indexPath) 
 
     def __loadGeneralInfo(self, indexPath):
         with open(indexPath + '/generalInfo.pkl', "rb") as f:
@@ -91,6 +99,10 @@ class Index:
     def __loadTerms(self, indexPath):
         with open(indexPath + '/terms.pkl', "rb") as f:
             self.terms = pickle.load(f)
+    
+    def __loadDocsDemo(self, indexPath):
+        with open(indexPath + '/docsDemo.pkl', "rb") as f:
+            self.docsDemo = pickle.load(f)
 
     def loadIndex(self, path):
         indexPath = path + '/index'
@@ -98,7 +110,8 @@ class Index:
         self.stopwords = self.__getStopwords(indexPath + '/stopwords.txt')
         self.__loadGeneralInfo(indexPath)
         self.__loadDocsInfo(indexPath)
-        self.__loadTerms(indexPath)        
+        self.__loadDocsDemo(indexPath)
+        self.__loadTerms(indexPath)  
     
     def __generateFiles(self):
 
@@ -106,7 +119,14 @@ class Index:
         docsLength = []
 
         for path in self.allFilesPaths:
-            frequencies = self.parser.wordCount(path)
+            
+            text = self.fileManager.readFile(path)
+            formatedText = self.parser.removeTags(text)
+
+            #save doc demo
+            self.docsDemo[docId] = formatedText[:200]
+
+            frequencies = self.parser.wordCount(formatedText)
             for word in frequencies.keys():
                 # terms
                 if word not in self.terms:
@@ -164,8 +184,9 @@ class Index:
             self.docsInfo[docId]['norm'] = math.sqrt(self.docsInfo[docId]['norm'])
 
 #ind = Index()
-#ind.doIndexing('D:/joaqu/Documents/GitHub/RIT_TP1/xml-es', 'D:/joaqu/Documents/GitHub/RIT_TP1/stopwords.txt', 'D:/joaqu/Documents/Pruebas RIT_TP1')
-#ind.loadIndex('D:/joaqu/Documents/Pruebas RIT_TP1')
+#ind.doIndexing(r'D:\Documents\GitHub\RIT_TP1\xml-es', r'D:\Documents\GitHub\RIT_TP1\Index.py', r'D:\Documents\GitHub')
+#ind.loadIndex(r'D:\Documents\GitHub')
+#print(ind.docsDemo)
 #print(ind.terms['año'])
 #print("---")
 #print(ind.terms)
