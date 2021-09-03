@@ -52,14 +52,8 @@ class XMLParser:
         #Group words
         return dict(Counter(acceptedWords))
 
-    def wordCount(self, fname):
-        try:
-            with open(fname, encoding='utf-8') as f:
-                    return self.process(self.removeTags(f.read()))
-        except:
-            #if not utf-8 text file
-            with open(fname) as f:
-                    return self.process(self.removeTags(f.read()))  
+    def wordCount(self, text):
+        return self.process(text)
 
     def wordCountText(self, text, stopwords):
         self.stopwords = stopwords
