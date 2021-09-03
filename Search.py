@@ -84,7 +84,7 @@ class Search:
             if(doc[0] > 0):
                 if(output!=""):
                     output+="\n"
-                output += "pos: " + str(index) + " docID: " + str(doc[1]) + " sim: " + str(doc[0])
+                output += "pos: " + str(index+1) + " docID: " + str(doc[1]) + " sim: " + str(doc[0]) + " path: " + self.index.docsInfo[doc[1]]['relativePath']
 
         prefix = prefix + ".sca"
         self.fileManager.saveFile("searchResults", prefix, output)
@@ -102,18 +102,15 @@ class Search:
         for pos in range(numDocs):
             if(len(scale)>=pos):
                 doc = scale[pos]
-
                 
-                output += "\n\ndocID: " + str(doc[1])  
-                output += "\npos: " + str(pos)  
+                output += "\n\npos: " + str(pos+1)  
+                output += "\ndocID: " + str(doc[1])  
                 output += "\nsim: " + str(doc[0])  
                 output += "\npath: " + self.index.docsInfo[doc[1]]['relativePath']
                 output += "\n\nfirst 200 chraracters:"
-                output += "\nEl texto extraido"
+                output += "\n" + self.index.docsDemo[doc[1]]
 
                 output += "\n\n-----------------------------------------------------------"
-
-
             else:
                 break
 
