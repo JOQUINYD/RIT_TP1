@@ -4,6 +4,7 @@ import os
 import statistics
 import math
 import pickle
+import re
 
 class Index:
     parser = XMLParser()
@@ -183,8 +184,10 @@ class Index:
         for docId in list(self.docsInfo):
             self.docsInfo[docId]['norm'] = math.sqrt(self.docsInfo[docId]['norm'])
 
-#ind = Index()
-#ind.doIndexing(r'D:\joaqu\Documents\GitHub\RIT_TP1\xml-es', r'D:\joaqu\Documents\GitHub\RIT_TP1\stopwords.txt', r'D:\joaqu\Documents\Pruebas RIT_TP1')
+    def getTerm(self,term):
+        if term in self.terms:
+            return self.terms[term]
+        return {}
 #ind.loadIndex(r'D:\joaqu\Documents\Pruebas RIT_TP1')
 #print(ind.docsInfo)
 #print(ind.terms['helixcode'])
