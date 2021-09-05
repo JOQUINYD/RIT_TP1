@@ -173,7 +173,7 @@ class Index:
                 self.docsInfo[docId]['norm'] += weight ** 2
             
             # IDF
-            idf = math.log((totalDocs - ni + 0.5) / (ni + 0.5))
+            idf = math.log((totalDocs - ni + 0.5) / (ni + 0.5), 10)
             if idf >= 0:
                 self.terms[word]['IDF'] = idf
             else:
@@ -184,9 +184,9 @@ class Index:
             self.docsInfo[docId]['norm'] = math.sqrt(self.docsInfo[docId]['norm'])
 
 #ind = Index()
-#ind.doIndexing(r'D:\Documents\GitHub\RIT_TP1\xml-es', r'D:\Documents\GitHub\RIT_TP1\Index.py', r'D:\Documents\GitHub')
-#ind.loadIndex(r'D:\Documents\GitHub')
-#print(ind.docsDemo)
-#print(ind.terms['año'])
+#ind.doIndexing(r'D:\joaqu\Documents\GitHub\RIT_TP1\xml-es', r'D:\joaqu\Documents\GitHub\RIT_TP1\stopwords.txt', r'D:\joaqu\Documents\Pruebas RIT_TP1')
+#ind.loadIndex(r'D:\joaqu\Documents\Pruebas RIT_TP1')
+#print(ind.docsInfo)
+#print(ind.terms['helixcode'])
 #print("---")
-#print(ind.terms)
+#print(ind.terms['aaron'])
