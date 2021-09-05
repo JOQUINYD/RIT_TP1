@@ -25,7 +25,7 @@ class Index:
         self.stopwords = self.__getStopwords(stopwordsPath)
         self.parser.setStopwords(self.stopwords)
         self.generalInfo['directory'] = dirName + '\\'
-
+        
     def doIndexing(self, dirName, stopwordsPath, indexPath):
         self.__setAttributes(dirName, stopwordsPath)
         self.__generateFiles()
@@ -188,8 +188,19 @@ class Index:
         if term in self.terms:
             return self.terms[term]
         return {}
+    
+    def getDocument(self, relativePath):
+        formatedPath = re.sub(pattern="\\\\|\/", repl=" " , string=relativePath)
+        for docId in self.docsInfo.keys():
+            formatedDocPath = re.sub(pattern="\\\\|\/", repl=" " , string=self.docsInfo[docId]['relativePath'])
+            if formatedDocPath == formatedPath:
+                return self.docsInfo[docId]
+        return {}
+
+ind = Index()
+ind.doIndexing(r'D:\joaqu\Documents\GitHub\RIT_TP1\xml-es', r'D:\joaqu\Documents\GitHub\RIT_TP1\stopwords.txt', r'D:\joaqu\Documents\Pruebas RIT_TP1')
 #ind.loadIndex(r'D:\joaqu\Documents\Pruebas RIT_TP1')
-#print(ind.docsInfo)
+print(ind.getDocument('applets/cdplayer-ug.xml'))
 #print(ind.terms['helixcode'])
 #print("---")
 #print(ind.terms['aaron'])
