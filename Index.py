@@ -23,7 +23,7 @@ class Index:
         self.allFilesPaths = self.__getListOfFiles(dirName)
         self.stopwords = self.__getStopwords(stopwordsPath)
         self.parser.setStopwords(self.stopwords)
-        self.generalInfo['directory'] = dirName
+        self.generalInfo['directory'] = dirName + '\\'
 
     def doIndexing(self, dirName, stopwordsPath, indexPath):
         self.__setAttributes(dirName, stopwordsPath)
