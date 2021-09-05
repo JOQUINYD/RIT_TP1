@@ -22,6 +22,6 @@ class Inspection:
         return dicResult
 
 
-qe = Inspection()
-print(qe.inspect(r'D:\joaqu\Documents\Pruebas RIT_TP1', 'ter', 'Cargá'))
+#qe = Inspection()
+#print(qe.inspect(r'D:\joaqu\Documents\Pruebas RIT_TP1', 'ter', 'Cargá'))
 #print(qe.inspect(r'D:\joaqu\Documents\Pruebas RIT_TP1', 'doc', 'xacc-ticker.xml'))

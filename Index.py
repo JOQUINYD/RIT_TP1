@@ -199,7 +199,7 @@ class Index:
         return {}
 
 #ind = Index()
-#ind.doIndexing(r'D:\joaqu\Documents\GitHub\RIT_TP1\xml-es', r'D:\joaqu\Documents\GitHub\RIT_TP1\stopwords.txt', r'D:\joaqu\Documents\Pruebas RIT_TP1')
+#ind.doIndexing(r'D:\joaqu\Documents\GitHub\RIT_TP1\prueba_xml', r'D:\joaqu\Documents\GitHub\RIT_TP1\stopwords.txt', r'D:\joaqu\Documents\Pruebas RIT_TP1')
 #ind.loadIndex(r'D:\joaqu\Documents\Pruebas RIT_TP1')
 #print(ind.getDocument('applets/cdplayer-ug.xml'))
 #print(ind.terms['helixcode'])
