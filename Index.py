@@ -106,13 +106,12 @@ class Index:
             self.docsDemo = pickle.load(f)
 
     def loadIndex(self, path):
-        indexPath = path + '/index'
 
-        self.stopwords = self.__getStopwords(indexPath + '/stopwords.txt')
-        self.__loadGeneralInfo(indexPath)
-        self.__loadDocsInfo(indexPath)
-        self.__loadDocsDemo(indexPath)
-        self.__loadTerms(indexPath)  
+        self.stopwords = self.__getStopwords(path + '/stopwords.txt')
+        self.__loadGeneralInfo(path)
+        self.__loadDocsInfo(path)
+        self.__loadDocsDemo(path)
+        self.__loadTerms(path)  
     
     def __generateFiles(self):
 
