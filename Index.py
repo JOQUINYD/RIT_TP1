@@ -173,7 +173,7 @@ class Index:
                 self.docsInfo[docId]['norm'] += weight ** 2
             
             # IDF
-            idf = math.log((totalDocs - ni + 0.5) / (ni + 0.5), 10)
+            idf = math.log2((totalDocs - ni + 0.5) / (ni + 0.5), 10)
             if idf >= 0:
                 self.terms[word]['IDF'] = idf
             else:
