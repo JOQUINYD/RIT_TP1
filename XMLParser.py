@@ -18,9 +18,12 @@ class XMLParser:
     # removes accents
     # convert to lowercase
     def normalize(self, text):
-        accepted_accents = {u'\N{COMBINING TILDE}',}
-        return ''.join(c for c in unicodedata.normalize('NFKD', text) 
-                        if unicodedata.category(c) != 'Mn' or c in accepted_accents).lower()    
+        #To lowercase
+        text = text.lower()
+        # Remove accents
+        trans_tab = dict.fromkeys(map(ord, u'\u0301\u0308'), None)
+        text = unicodedata.normalize('NFKC', unicodedata.normalize('NFKD', text).translate(trans_tab))
+        return text
 
 
     def splitToAcceptedWords(self,text):

@@ -4,6 +4,7 @@ import os
 import statistics
 import math
 import pickle
+import re
 
 class Index:
     parser = XMLParser()
@@ -23,7 +24,7 @@ class Index:
         self.allFilesPaths = self.__getListOfFiles(dirName)
         self.stopwords = self.__getStopwords(stopwordsPath)
         self.parser.setStopwords(self.stopwords)
-        self.generalInfo['directory'] = dirName
+        self.generalInfo['directory'] = dirName + '\\'
 
     def doIndexing(self, dirName, stopwordsPath, indexPath):
         self.__setAttributes(dirName, stopwordsPath)
@@ -173,7 +174,7 @@ class Index:
                 self.docsInfo[docId]['norm'] += weight ** 2
             
             # IDF
-            idf = math.log((totalDocs - ni + 0.5) / (ni + 0.5))
+            idf = math.log((totalDocs - ni + 0.5) / (ni + 0.5), 10)
             if idf >= 0:
                 self.terms[word]['IDF'] = idf
             else:
@@ -183,10 +184,24 @@ class Index:
         for docId in list(self.docsInfo):
             self.docsInfo[docId]['norm'] = math.sqrt(self.docsInfo[docId]['norm'])
 
+    def getTerm(self,term):
+        term = self.parser.normalize(term)
+        if term in self.terms:
+            return self.terms[term]
+        return {}
+    
+    def getDocument(self, relativePath):
+        formatedPath = re.sub(pattern="\\\\|\/", repl=" " , string=relativePath)
+        for docId in self.docsInfo.keys():
+            formatedDocPath = re.sub(pattern="\\\\|\/", repl=" " , string=self.docsInfo[docId]['relativePath'])
+            if formatedDocPath == formatedPath:
+                return self.docsInfo[docId]
+        return {}
+
 #ind = Index()
-#ind.doIndexing(r'D:\Documents\GitHub\RIT_TP1\xml-es', r'D:\Documents\GitHub\RIT_TP1\Index.py', r'D:\Documents\GitHub')
-#ind.loadIndex(r'D:\Documents\GitHub')
-#print(ind.docsDemo)
-#print(ind.terms['año'])
+#ind.doIndexing(r'D:\joaqu\Documents\GitHub\RIT_TP1\prueba_xml', r'D:\joaqu\Documents\GitHub\RIT_TP1\stopwords.txt', r'D:\joaqu\Documents\Pruebas RIT_TP1')
+#ind.loadIndex(r'D:\joaqu\Documents\Pruebas RIT_TP1')
+#print(ind.getDocument('applets/cdplayer-ug.xml'))
+#print(ind.terms['helixcode'])
 #print("---")
-#print(ind.terms)
+#print(ind.terms['aaron'])
