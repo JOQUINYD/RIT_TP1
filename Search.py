@@ -143,8 +143,8 @@ class Search:
         # sqrt for the sum of weights -> sum                
         self.queryInfo['norm'] = math.sqrt(self.queryInfo['norm'])
 
-sear = Search()
-sear.search(r'D:\Documents\GitHub', 'vec', 'prefijo', 20, "carga de cpu")
+#sear = Search()
+#sear.search(r'D:\joaqu\Documents\Pruebas RIT_TP1', 'bm25', 'prefijo', 20, "carga de cpu")
 """ print(sear.queryInfo)
 print(sear.index.terms['euro'])
 print(sear.index.terms['moneda'])
