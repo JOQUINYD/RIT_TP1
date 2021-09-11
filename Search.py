@@ -92,27 +92,60 @@ class Search:
 
     def __saveHTML(self, scale, prefix, numDocs, query):
         output = ""
-        output += "Query: " + query
+        now = time.strftime("%x") + " " + time.strftime("%X")  
+       
+        output += f"""
+<!DOCTYPE html>
+<html>
 
-        output += "\nDate and Time: " + time.strftime("%x") + " " + time.strftime("%X")
+<head>
+    <title>Resultados {prefix}</title>
+</head>
 
-        output += "\n\nDocumentos"
-        output += "\n\n-----------------------------------------------------------"
-        
+<body>
+
+    <h1>
+        Query: {query}
+    </h1>
+
+    <h2>Date and Time: {now}
+
+    <br><br>
+    <h1>Documentos</h1>
+    <hr>
+        """
+
         for pos in range(numDocs):
-            if(len(scale)>=pos):
-                doc = scale[pos]
+            if(len(scale)>pos):
                 
-                output += "\n\npos: " + str(pos+1)  
-                output += "\ndocID: " + str(doc[1])  
-                output += "\nsim: " + str(doc[0])  
-                output += "\npath: " + self.index.docsInfo[doc[1]]['relativePath']
-                output += "\n\nfirst 200 chraracters:"
-                output += "\n" + self.index.docsDemo[doc[1]]
-
-                output += "\n\n-----------------------------------------------------------"
+                doc = scale[pos]
+                relativePath = self.index.docsInfo[doc[1]]['relativePath']
+                directory = self.index.generalInfo['directory']
+                text = self.index.docsDemo[doc[1]]
+                
+                output += f"""
+    <br>
+    <h2>Doc id: {doc[1]} </h2>
+    <h3>Position: {pos+1} </h3>
+    <h3>Similarity: {doc[0]} </h3>
+    <h3>Path:
+        <a href="file:\\\\{directory+relativePath}">{relativePath}</a>
+    </h3>
+    <h3>First 200 chraracters:</h3>
+    <p>
+        {text}
+    </p>
+    <br>
+    <hr>
+                """
             else:
                 break
+        
+        output+="""
+</body>
+
+</html>
+        """
 
         prefix = prefix + ".html"
         self.fileManager.saveFile("searchResults", prefix, output)
@@ -128,17 +161,17 @@ class Search:
 
         frequencies = self.index.parser.wordCountText(query, self.index.stopwords)
         for word in frequencies:
-            if word in self.index.terms:
-                # weight
-                totalDocs = self.index.generalInfo['totalDocs'] 
-                ni = self.index.terms[word]['ni']
-                log2_N_ni = math.log((totalDocs / ni), 2)
-                weight = math.log((1 + frequencies[word]), 2) * log2_N_ni
 
-                self.queryInfo['words'][word] = {'freq' : frequencies[word], 'weight' : weight}
+            # weight
+            totalDocs = self.index.generalInfo['totalDocs'] 
+            ni = self.index.terms[word]['ni']
+            log2_N_ni = math.log((totalDocs / ni), 2)
+            weight = math.log((1 + frequencies[word]), 2) * log2_N_ni
 
-                # norm sum
-                self.queryInfo['norm'] += weight ** 2
+            self.queryInfo['words'][word] = {'freq' : frequencies[word], 'weight' : weight}
+
+            # norm sum
+            self.queryInfo['norm'] += weight ** 2
 
         # sqrt for the sum of weights -> sum                
         self.queryInfo['norm'] = math.sqrt(self.queryInfo['norm'])
