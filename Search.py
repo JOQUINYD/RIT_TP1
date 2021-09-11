@@ -128,17 +128,17 @@ class Search:
 
         frequencies = self.index.parser.wordCountText(query, self.index.stopwords)
         for word in frequencies:
+            if word in self.index.terms:
+                # weight
+                totalDocs = self.index.generalInfo['totalDocs'] 
+                ni = self.index.terms[word]['ni']
+                log2_N_ni = math.log((totalDocs / ni), 2)
+                weight = math.log((1 + frequencies[word]), 2) * log2_N_ni
 
-            # weight
-            totalDocs = self.index.generalInfo['totalDocs'] 
-            ni = self.index.terms[word]['ni']
-            log2_N_ni = math.log((totalDocs / ni), 2)
-            weight = math.log((1 + frequencies[word]), 2) * log2_N_ni
+                self.queryInfo['words'][word] = {'freq' : frequencies[word], 'weight' : weight}
 
-            self.queryInfo['words'][word] = {'freq' : frequencies[word], 'weight' : weight}
-
-            # norm sum
-            self.queryInfo['norm'] += weight ** 2
+                # norm sum
+                self.queryInfo['norm'] += weight ** 2
 
         # sqrt for the sum of weights -> sum                
         self.queryInfo['norm'] = math.sqrt(self.queryInfo['norm'])
