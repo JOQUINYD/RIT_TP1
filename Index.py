@@ -106,13 +106,12 @@ class Index:
             self.docsDemo = pickle.load(f)
 
     def loadIndex(self, path):
-        indexPath = path + '/index'
 
-        self.stopwords = self.__getStopwords(indexPath + '/stopwords.txt')
-        self.__loadGeneralInfo(indexPath)
-        self.__loadDocsInfo(indexPath)
-        self.__loadDocsDemo(indexPath)
-        self.__loadTerms(indexPath)  
+        self.stopwords = self.__getStopwords(path + '/stopwords.txt')
+        self.__loadGeneralInfo(path)
+        self.__loadDocsInfo(path)
+        self.__loadDocsDemo(path)
+        self.__loadTerms(path)  
     
     def __generateFiles(self):
 
@@ -174,7 +173,7 @@ class Index:
                 self.docsInfo[docId]['norm'] += weight ** 2
             
             # IDF
-            idf = math.log((totalDocs - ni + 0.5) / (ni + 0.5), 10)
+            idf = math.log2((totalDocs - ni + 0.5) / (ni + 0.5))
             if idf >= 0:
                 self.terms[word]['IDF'] = idf
             else:
