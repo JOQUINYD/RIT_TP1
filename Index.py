@@ -131,7 +131,8 @@ class Index:
                 # terms
                 if word not in self.terms:
                     self.terms[word] = {
-                                        'ni' : 1, 
+                                        'ni' : 1,
+                                        'log2_N_ni' : 0, 
                                         'IDF' : 0, 
                                         'freq' : frequencies[word],
                                         'postings' : {docId : { 'freq' : frequencies[word], 'weight' : 0}}
@@ -147,7 +148,7 @@ class Index:
             docsLength += [currentDocLength]
 
             # docsInfo
-            self.docsInfo[docId] = {'relativePath' : path.replace(self.generalInfo['directory'],''), 'length' : currentDocLength, 'norm' : 0}
+            self.docsInfo[docId] = {'docId' : docId, 'relativePath' : path.replace(self.generalInfo['directory'],''), 'length' : currentDocLength, 'norm' : 0}
             
             docId += 1
 
@@ -162,6 +163,8 @@ class Index:
             totalDocs = self.generalInfo['totalDocs'] 
             ni = self.terms[word]['ni']
             log2_N_ni = math.log2((totalDocs / ni))
+
+            self.terms[word]['log2_N_ni'] = log2_N_ni
 
             for docId in list(self.terms[word]['postings']):
                 weight = math.log2((1 + self.terms[word]['postings'][docId]['freq'])) * log2_N_ni
