@@ -86,7 +86,7 @@ class Search:
                     output+="\n"
                 output += "pos: " + str(index+1) + " docID: " + str(doc[1]) + " sim: " + str(doc[0]) + " path: " + self.index.docsInfo[doc[1]]['relativePath']
 
-        prefix = prefix + ".sca"
+        prefix = prefix + ".esca"
         self.fileManager.saveFile("searchResults", prefix, output)
 
 
